@@ -151,6 +151,10 @@ tracer.trace { hop, result ->
 }
 ```
 
+# Documentation
+
+For more information, please refer to the [documentation.](https://impalex.github.io/icmpenguin/)
+
 # Contributing
 
 Contributions are welcome! Please submit pull requests for bug fixes or new features.
