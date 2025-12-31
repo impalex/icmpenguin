@@ -26,14 +26,13 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: 17
-        cache: 'gradle'
 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
       with:
         cmdline-tools-version: 'latest'
         packages: |
-          build-tools;36.0.0
+          build-tools;35.0.0
           platforms;android-36
 
     - name: Setup gradle
