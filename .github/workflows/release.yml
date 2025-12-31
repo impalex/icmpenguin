@@ -26,6 +26,13 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: 17
+        cache: gradle
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        cmdline-tools-version: 'latest'
+        sdk-packages: 'build-tools;30.0.3 platforms;android-30'
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
