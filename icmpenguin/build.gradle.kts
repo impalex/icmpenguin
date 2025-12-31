@@ -18,7 +18,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jreleaser.model.Active
-import java.net.URI
 
 plugins {
     alias(libs.plugins.android.library)
@@ -30,6 +29,7 @@ plugins {
 
 group = "me.impa"
 version = "1.0.0-rc.1"
+description = "Android ping & traceroute library with native performance"
 
 android {
     namespace = "${project.group}.icmpenguin"
@@ -121,6 +121,29 @@ publishing {
             groupId = project.group as String
             artifactId = project.name
             version = project.version as String
+            pom {
+                name = project.name
+                description = project.description ?: project.name
+                url = "https://github.com/impalex/icmpenguin"
+                licenses {
+                    license {
+                        name = "Apache 2.0"
+                        url = "https://github.com/impalex/icmpenguin/blob/main/LICENSE"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "impa"
+                        name = "Alexander Yaburov"
+                        email = "dev@impa.me"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/impalex/icmpenguin.git"
+                    developerConnection = "scm:git:ssh://github.com:impalex/icmpenguin.git"
+                    url = "https://github.com/impalex/icmpenguin"
+                }
+            }
             afterEvaluate {
                 from(components["release"])
             }
