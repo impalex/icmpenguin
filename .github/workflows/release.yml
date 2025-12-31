@@ -51,7 +51,7 @@ jobs:
 
     - name: Release with gradle
       run: |
-        ./gradlew --no-daemon -i jreleaserFullRelease
+        ./gradlew --no-daemon -i jreleaserFullRelease --stacktrace
       env:
         JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
