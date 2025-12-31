@@ -25,19 +25,19 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
- 
+
     - name: Generate docs
       run: |
         ./gradlew --no-daemon -i dokkaGenerate
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './icmpenguin/build/docs'
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v4
+      with:
+        path: './icmpenguin/build/docs'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
