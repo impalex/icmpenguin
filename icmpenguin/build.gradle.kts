@@ -154,13 +154,14 @@ jreleaser {
             mavenCentral.create("sonatype") {
                 active = Active.ALWAYS
                 url = "https://central.sonatype.com/api/v1/publisher"
-                stagingRepository(layout.buildDirectory.dir("staging-deploy").get().toString())
                 setAuthorization("Basic")
                 sign = true
                 checksums = true
                 sourceJar = true
                 javadocJar = true
+                applyMavenCentralRules = false
                 retryDelay = 60
+                stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.path)
             }
         }
     }
