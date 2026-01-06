@@ -28,7 +28,7 @@ plugins {
 }
 
 group = "me.impa"
-version = "1.0.0-rc.1"
+version = "1.0.0-rc.2"
 description = "Android ping & traceroute library with native performance"
 
 android {
@@ -104,9 +104,7 @@ dokka {
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.annotation.jvm)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(platform(libs.junit.bom))
 }
 
 publishing {
