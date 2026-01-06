@@ -23,6 +23,7 @@
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
 #include <sys/ioctl.h>
+#include <linux/ip.h>
 #include <linux/icmp.h>
 #include <linux/icmpv6.h>
 #include <linux/errqueue.h>
@@ -237,6 +238,18 @@ void ProbeManager::init_socket(int sock, ProbeContext &probe, bool detect_mtu) c
             on = IPV6_PMTUDISC_PROBE;
             if (setsockopt(sock, SOL_IPV6, IPV6_MTU_DISCOVER, &on, sizeof(on)) < 0) {
                 ALOGE("Error setting mtu discover: %d %s", errno, strerror(errno));
+            }
+        }
+    }
+    {
+        int tos = IPTOS_LOWDELAY;
+        if (remote_addr.ss_family == AF_INET) {
+            if (setsockopt(sock, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) < 0) {
+                ALOGE("Error setting tos: %d %s", errno, strerror(errno));
+            }
+        } else {
+            if (setsockopt(sock, IPPROTO_IPV6, IPV6_TCLASS, &tos, sizeof(tos)) < 0) {
+                ALOGE("Error setting tos: %d %s", errno, strerror(errno));
             }
         }
     }
