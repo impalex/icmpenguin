@@ -20,6 +20,8 @@
 buildscript {
     configurations.all {
         resolutionStrategy.force("org.apache.commons:commons-compress:1.26.2")
+        resolutionStrategy.force("org.bouncycastle:bcpg-jdk18on:1.83")
+        resolutionStrategy.force("org.bouncycastle:bcprov-jdk18on:1.83")
     }
 }
 

@@ -159,10 +159,11 @@ jreleaser {
         author("Alexander Yaburov")
     }
     release {
-        github {
+        generic {
             enabled = true
             skipRelease = true
             skipTag = true
+            token = "DUMMY_TOKEN//NOT_USED"
         }
     }
     signing {
