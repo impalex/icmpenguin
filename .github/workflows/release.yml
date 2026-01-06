@@ -1,14 +1,10 @@
-name: Publish to mavencentral
+name: Publish
 
 on:
   release:
     types: [published]
     
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Git tag (e.g., v1.0.0)'
-        required: true
 
 env:
   RELEASE_TAG: ${{ github.event.inputs.tag || github.ref_name }}
@@ -24,8 +20,9 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
-        java-version: 17
+        distribution: 'temurin'
+        java-version: 21
+        cache: 'gradle'
 
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3

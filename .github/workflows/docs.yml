@@ -2,9 +2,8 @@ name: Generate docs
 
 on:
   workflow_run:
-    workflows: ["Publish to mavencentral"]
-    types:
-      - completed
+    workflows: ['Publish']
+    types: [completed]
     branches: ['main']
 
   workflow_dispatch:
@@ -25,8 +24,9 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
-        java-version: 17
+        distribution: 'temurin'
+        java-version: 21
+        cache: 'gradle'
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
