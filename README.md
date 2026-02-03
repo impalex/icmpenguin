@@ -85,6 +85,22 @@ suspend fun pingHost(host: String) {
 }
 ```
 
+## Flow Example
+
+```kotlin
+val scope = CoroutineScope(Dispatchers.IO)
+scope.launch {
+    Pinger("google.com").ping().collect { probeResult ->
+        println(probeResult)
+    }
+}
+
+...
+	
+// All resources will be automatically released.
+scope.cancel()
+```
+
 ## Traceroute Example
 
 Use the ``SimpleTracer`` class for simplified traceroute. Hop statuses are updated asynchronously.

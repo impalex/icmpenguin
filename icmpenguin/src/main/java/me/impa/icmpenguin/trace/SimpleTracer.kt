@@ -17,6 +17,8 @@
 
 package me.impa.icmpenguin.trace
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import me.impa.icmpenguin.ProbeResult
@@ -106,6 +108,21 @@ class SimpleTracer(
                 }
             }
         }
+    }
+
+    /**
+     * Executes the trace operation and returns a [Flow] of [HopStatus] objects.
+     *
+     * This function provides a reactive stream of trace updates. Each emission from the flow
+     * represents the updated status of a single hop in the trace route. This is useful for
+     * building responsive user interfaces or for processing trace results in a streaming fashion.
+     *
+     * The underlying trace logic is the same as the callback-based [trace] function.
+     *
+     * @return A [Flow] that emits [HopStatus] updates as the trace progresses.
+     */
+    fun trace(): Flow<HopStatus> = channelFlow {
+        trace { trySend(it) }
     }
 
     companion object {

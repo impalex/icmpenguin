@@ -21,6 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.withContext
 import me.impa.icmpenguin.ProbeManager
 import me.impa.icmpenguin.ProbeResult
@@ -205,6 +207,21 @@ class Tracer(
         } finally {
             _isActive.set(false)
         }
+    }
+
+    /**
+     * Starts the traceroute operation and returns a [Flow] of [TraceProbeResult].
+     *
+     * This function provides a reactive way to receive traceroute results. It launches the
+     * traceroute process and wraps the callback-based `trace` function in a [channelFlow],
+     * emitting each probe result as a [TraceProbeResult] object.
+     *
+     * The flow will complete when the traceroute operation finishes or is cancelled.
+     *
+     * @return A [Flow] that emits [TraceProbeResult] for each probe sent.
+     */
+    fun trace(): Flow<TraceProbeResult> = channelFlow {
+        trace { hop, result -> trySend(TraceProbeResult(hop, result)) }
     }
 
     companion object {

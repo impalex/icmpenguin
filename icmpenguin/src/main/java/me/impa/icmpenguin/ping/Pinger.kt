@@ -19,6 +19,8 @@ package me.impa.icmpenguin.ping
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.impa.icmpenguin.ProbeManager
@@ -112,6 +114,34 @@ class Pinger(
         } finally {
             _isActive.set(false)
         }
+    }
+
+    /**
+     * Starts the ping process and returns the results as a [Flow].
+     *
+     * This function initiates the sending of ICMP echo requests to the configured host
+     * and emits each [ProbeResult] to the returned Flow. This provides a reactive,
+     * stream-based way to handle ping results.
+     *
+     * The ping process will continue emitting results until `maxPingCount` is reached,
+     * or indefinitely if `maxPingCount` is set to [INFINITE]. The flow completes when
+     * the ping session ends or is cancelled.
+     *
+     * Example usage with Flow:
+     * ```kotlin
+     * val pinger = Pinger(host = "google.com")
+     * CoroutineScope(Dispatchers.IO).launch {
+     *     pinger.ping()
+     *         .onEach { result -> println("Ping result: $result") }
+     *         .catch { e -> println("An error occurred: ${e.message}") }
+     *         .collect()
+     * }
+     * ```
+     *
+     * @return A [Flow] of [ProbeResult] for each ping attempt.
+     */
+    fun ping(): Flow<ProbeResult> = channelFlow {
+        ping { trySend(it) }
     }
 
     companion object {

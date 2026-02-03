@@ -44,6 +44,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import me.impa.icmpenguin.ProbeResult
 import me.impa.icmpenguin.demo.ui.theme.IcmpenguinTheme
 import me.impa.icmpenguin.ping.Pinger
@@ -129,7 +133,7 @@ fun DemoContent(modifier: Modifier = Modifier) {
 suspend fun pingAction(host: String, onUpdateResults: (List<String>) -> Unit) {
     val packets = mutableListOf<ProbeResult>()
     onUpdateResults(emptyList())
-    Pinger(host).ping { probeResult ->
+    Pinger(host).ping().collect { probeResult ->
         packets.add(probeResult)
         onUpdateResults(packets.sortedBy { it.sequence }.map { it.toString() })
     }
@@ -138,7 +142,7 @@ suspend fun pingAction(host: String, onUpdateResults: (List<String>) -> Unit) {
 suspend fun traceAction(host: String, onUpdateResults: (List<String>) -> Unit) {
     val hops = mutableMapOf<Int, HopStatus>()
     onUpdateResults(emptyList())
-    SimpleTracer(host).trace { hopStatus ->
+    SimpleTracer(host).trace().collect { hopStatus ->
         hops[hopStatus.num] = hopStatus
         onUpdateResults(hops.values.sortedBy { it.num }.map { it.toString() })
     }
