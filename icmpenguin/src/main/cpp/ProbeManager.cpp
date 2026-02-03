@@ -32,12 +32,23 @@
 #include <jni.h>
 #include "jni_methods.h"
 
-ProbeManager::ProbeManager(const char *remote_ip, void *callback_obj, JNICallback trigger_callback) {
+ProbeManager::ProbeManager(const char *remote_ip, const char *source_ip, void *callback_obj,
+                           JNICallback trigger_callback) {
     this->remote_ip = std::string(remote_ip);
-    if (try_init_remote_addr(AF_INET, remote_ip) <= 0) {
-        if (try_init_remote_addr(AF_INET6, remote_ip) <= 0) {
+    if (try_init_addr(AF_INET, remote_ip, remote_addr) <= 0) {
+        if (try_init_addr(AF_INET6, remote_ip, remote_addr) <= 0) {
             ALOGE("Invalid network address format");
             return;
+        }
+    }
+    this->source_ip = std::string(source_ip);
+    if (!this->source_ip.empty()) {
+        if (try_init_addr(AF_INET, source_ip, source_addr) <= 0) {
+            if (try_init_addr(AF_INET6, source_ip, source_addr) <= 0) {
+                ALOGE("Invalid source address format");
+                // Fallback to default
+                this->source_ip = "";
+            }
         }
     }
     this->callback_obj = callback_obj;
@@ -48,19 +59,19 @@ ProbeManager::ProbeManager(const char *remote_ip, void *callback_obj, JNICallbac
     ident = dis(gen);
 }
 
-int ProbeManager::try_init_remote_addr(int family, const char *host) {
-    memset(&remote_addr, 0, sizeof(remote_addr));
+int ProbeManager::try_init_addr(int family, const char *addr, sockaddr_storage &addr_storage) {
+    memset(&addr_storage, 0, sizeof(addr_storage));
     void *sin_addr_ptr = nullptr;
     if (family == AF_INET) {
-        auto *sa_in = reinterpret_cast<struct sockaddr_in *>(&remote_addr);
+        auto *sa_in = reinterpret_cast<struct sockaddr_in *>(&addr_storage);
         sa_in->sin_family = AF_INET; // Set family
         sin_addr_ptr = &(sa_in->sin_addr);
     } else {
-        auto *sa_in6 = reinterpret_cast<struct sockaddr_in6 *>(&remote_addr);
+        auto *sa_in6 = reinterpret_cast<struct sockaddr_in6 *>(&addr_storage);
         sa_in6->sin6_family = AF_INET6; // Set family
         sin_addr_ptr = &(sa_in6->sin6_addr);
     }
-    return inet_pton(family, host, sin_addr_ptr);
+    return inet_pton(family, addr, sin_addr_ptr);
 }
 
 void ProbeManager::start() {
@@ -281,6 +292,20 @@ int ProbeManager::send_probe(int id, ProbeType probe_type, int port, int sequenc
         trigger_callback(callback_obj, probe);
         return SEND_PROBE_ERROR;
     }
+
+    if (!source_ip.empty()) {
+        // Bind to specific source address
+        socklen_t source_addr_len = source_addr.ss_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+        if (bind(sock, reinterpret_cast<sockaddr *>(&source_addr), source_addr_len) < 0) {
+            probe.error_msg = std::string("Error binding socket: ") + strerror(errno);
+            probe.status = ProbeStatus::FATAL_ERROR;
+            ALOGE("Error binding socket: %d %s", errno, strerror(errno));
+            close(sock);
+            trigger_callback(callback_obj, probe);
+            return SEND_PROBE_ERROR;
+        }
+    }
+
     init_socket(sock, probe, detect_mtu);
     init_packet_data(probe, size, pattern, pattern_len);
 
@@ -620,17 +645,22 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *) {
     clear_jni_global_refs(env);
 }
 
-JNIEXPORT jlong JNICALL Java_me_impa_icmpenguin_ProbeManager_create(JNIEnv *env, jobject thiz, jstring ip) {
-    const char *ip_str = env->GetStringUTFChars(ip, nullptr);
+JNIEXPORT jlong JNICALL
+Java_me_impa_icmpenguin_ProbeManager_create(JNIEnv *env, jobject thiz, jstring remote_ip, jstring source_ip) {
+    const char *remote_ip_str = env->GetStringUTFChars(remote_ip, nullptr);
+    const char *source_ip_str = env->GetStringUTFChars(source_ip, nullptr);
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "MemoryLeak"
     // No, dear clang, this is not a leak.
     // The lifetime of this class is managed by Kotlin through a descriptor.
-    auto *manager = new ProbeManager(ip_str, env->NewGlobalRef(thiz), trigger_callback);
+    auto *manager = new ProbeManager(remote_ip_str, source_ip_str,
+                                     env->NewGlobalRef(thiz), trigger_callback);
 
 #pragma clang diagnostic pop
     manager->start();
-    env->ReleaseStringUTFChars(ip, ip_str);
+    env->ReleaseStringUTFChars(source_ip, source_ip_str);
+    env->ReleaseStringUTFChars(remote_ip, remote_ip_str);
     return reinterpret_cast<jlong>(manager);
 }
 

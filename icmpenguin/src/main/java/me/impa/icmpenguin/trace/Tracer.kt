@@ -37,14 +37,15 @@ import kotlin.math.min
  * It supports both concurrent and stepped tracing methods.
  *
  * @property host The hostname or IP address of the target.
- * @property probeType The type of probe to use for tracing (e.g., ICMP, UDP).
- * @property traceStrategy The strategy to use for sending probes (e.g., [TraceStrategy.Stepped],
- *  [TraceStrategy.Concurrent]). Defaults to [TraceStrategy.Stepped].
- * @property portStrategy The strategy to use for selecting ports when [probeType] is UDP.
- *  Defaults to [PortStrategy.Sequential].
+ * @property probeType The type of probe to use for tracing (e.g., [ProbeType.ICMP], [ProbeType.UDP]).
+ * @property traceStrategy The strategy for sending probes (e.g., [TraceStrategy.Stepped],
+ *   [TraceStrategy.Concurrent]). Defaults to [TraceStrategy.Stepped].
+ * @property portStrategy The strategy for selecting ports when `probeType` is [ProbeType.UDP].
+ *   Defaults to [PortStrategy.Sequential].
  * @property probeSize The size of the probe packets. Defaults to [ProbeSize.Static] with size [DEFAULT_PROBE_SIZE].
  * @property timeout The timeout for each probe in milliseconds. Defaults to [DEFAULT_TIMEOUT].
- *  The value will be coerced to be within [MIN_TIME_OUT] and [MAX_TIME_OUT].
+ *   The value will be coerced to be within [MIN_TIME_OUT] and [MAX_TIME_OUT].
+ * @property sourceIp The source IP address to bind to. If empty, a source address will be chosen automatically.
  */
 class Tracer(
     val host: String,
@@ -53,6 +54,7 @@ class Tracer(
     val portStrategy: PortStrategy = PortStrategy.Sequential(),
     val probeSize: ProbeSize = ProbeSize.Static(size = DEFAULT_PROBE_SIZE),
     val timeout: Int = DEFAULT_TIMEOUT,
+    val sourceIp: String = ""
 ) {
 
     private var cutoff = AtomicInteger(Int.MAX_VALUE)
@@ -71,7 +73,7 @@ class Tracer(
         var cycle = 0
         val size = AtomicInteger(if (probeSize is ProbeSize.Static) probeSize.size else MAX_PACKET_SIZE)
         coroutineScope {
-            ProbeManager(ip).use { manager ->
+            ProbeManager(ip, sourceIp).use { manager ->
                 while (_isActive.get() && (cycles == TraceStrategy.Concurrent.INFINITE || cycle < cycles)) {
                     for (hop in 1..hops) {
                         manager.sendProbe(
@@ -116,7 +118,7 @@ class Tracer(
         val size = AtomicInteger(if (probeSize is ProbeSize.Static) probeSize.size else MAX_PACKET_SIZE)
 
         coroutineScope {
-            ProbeManager(ip).use { manager ->
+            ProbeManager(ip, sourceIp).use { manager ->
                 while (_isActive.get()) {
                     if (manager.getQueueSize() > maxConcurrentProbes) {
                         delay(WAIT_RESOLUTION)

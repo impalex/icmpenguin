@@ -28,7 +28,7 @@ import java.lang.System.loadLibrary
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicInteger
 
-internal class ProbeManager(host: String) : AutoCloseable {
+internal class ProbeManager(host: String, sourceIp: String = "") : AutoCloseable {
 
     private val instance: Long
 
@@ -106,7 +106,7 @@ internal class ProbeManager(host: String) : AutoCloseable {
 
     init {
         val address = InetAddress.getByName(host)
-        instance = create(requireNotNull(address.hostAddress))
+        instance = create(requireNotNull(address.hostAddress), sourceIp)
     }
 
     override fun close() {
@@ -114,7 +114,7 @@ internal class ProbeManager(host: String) : AutoCloseable {
     }
 
     @Suppress("unused")
-    private external fun create(ip: String): Long
+    private external fun create(remoteIp: String, sourceIp: String): Long
 
     @Suppress("unused")
     private external fun delete(ptr: Long)

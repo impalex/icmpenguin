@@ -1,16 +1,16 @@
 [versions]
-agp = "8.13.2"
+agp = "9.0.0"
 kotlin = "2.3.0"
 coroutine = "1.10.2"
 coreKtx = "1.17.0"
-junit = "6.0.1"
+junit = "6.0.2"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.2"
-composeBom = "2025.12.01"
-testManifest = "1.10.0"
+activityCompose = "1.12.3"
+composeBom = "2026.01.01"
+testManifest = "1.10.2"
 annotationJvm = "1.9.1"
-dokka = "2.1.0"
-jreleaser = "1.21.0"
+dokka = "2.2.0-Beta"
+jreleaser = "1.22.0"
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
@@ -31,7 +31,6 @@ dokka-base = { group = "org.jetbrains.dokka", name = "dokka-base", version.ref =
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

@@ -21,7 +21,6 @@ import org.jreleaser.model.Active
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.dokka)
     id("maven-publish")
     alias(libs.plugins.jreleaser)
@@ -167,9 +166,11 @@ jreleaser {
         }
     }
     signing {
-        active = Active.ALWAYS
-        armored = true
-        verify = true
+        pgp {
+            active = Active.ALWAYS
+            armored = true
+            verify = true
+        }
     }
     deploy {
         maven {

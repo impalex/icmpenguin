@@ -83,14 +83,16 @@ private:
     std::mutex probes_mutex;
     int ident;
     struct sockaddr_storage remote_addr{};
+    struct sockaddr_storage source_addr{};
     std::string remote_ip;
+    std::string source_ip;
     std::thread worker;
     std::atomic<bool> running{false};
     int epoll_fd = -1;
     int wakeup_fd = -1;
     std::promise<void> start_promise;
 
-    int try_init_remote_addr(int family, const char *host);
+    int try_init_addr(int family, const char *addr, sockaddr_storage &addr_storage);
 
     void init_packet_data(ProbeContext &probe, int size, char *pattern, int pattern_len) const;
 
@@ -118,7 +120,7 @@ private:
 
 public:
 
-    explicit ProbeManager(const char *remote_ip, void *callback_obj, JNICallback trigger_callback);
+    explicit ProbeManager(const char *remote_ip, const char *source_ip, void *callback_obj, JNICallback trigger_callback);
 
     void start();
 

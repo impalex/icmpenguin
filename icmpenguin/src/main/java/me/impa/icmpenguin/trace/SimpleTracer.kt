@@ -37,6 +37,7 @@ import me.impa.icmpenguin.ProbeType
  * @property portStrategy The strategy for selecting ports when using UDP probes.
  *  Defaults to [PortStrategy.Sequential].
  * @property probeSize The size of the probe packets. Defaults to [ProbeSize.MtuDiscovery]
+ * @property sourceIp The source IP address to bind to. If empty, a source address will be chosen automatically.
  */
 @Suppress("LongParameterList")
 class SimpleTracer(
@@ -48,6 +49,7 @@ class SimpleTracer(
     val concurrency: Int = 5,
     val portStrategy: PortStrategy = PortStrategy.Sequential(),
     val probeSize: ProbeSize = ProbeSize.MtuDiscovery,
+    val sourceIp: String = ""
     ) {
 
     private val semaphore = Semaphore(1)
@@ -83,7 +85,8 @@ class SimpleTracer(
             ),
             timeout = timeout,
             probeSize = probeSize,
-            portStrategy = portStrategy
+            portStrategy = portStrategy,
+            sourceIp = sourceIp
         )
         tracer.trace { hop, result ->
             semaphore.withPermit {

@@ -28,16 +28,30 @@ import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Pinger class provides functionality to send ICMP echo requests to a specified host.
+ * Provides functionality to send ICMP echo requests to a specified host.
+ *
+ * This class handles the entire lifecycle of a ping session, from resolving the hostname
+ * to sending ICMP packets and reporting the results. It operates asynchronously using
+ * coroutines.
+ *
+ * Example usage:
+ * ```kotlin
+ * val pinger = Pinger(host = "google.com", maxPingCount = 4)
+ * CoroutineScope(Dispatchers.IO).launch {
+ *     pinger.ping { result ->
+ *         println("Ping result: $result")
+ *     }
+ * }
+ * ```
  *
  * @property host The hostname or IP address to ping.
- * @property ttl Time to live for the ICMP packets. Defaults to [DEFAULT_TTL].
- * @property timeout Timeout in milliseconds for each ping request. Defaults to [DEFAULT_TIMEOUT].
- * @property maxPingCount Maximum number of ping requests to send. Set to [INFINITE] for continuous pinging.
- *   Defaults to [DEFAULT_PING_COUNT].
- * @property interval Interval in milliseconds between ping requests. Defaults to [DEFAULT_INTERVAL].
- * @property probeSize Size of the ICMP packet. Defaults to [DEFAULT_PROBE_SIZE].
- * @property pattern Optional byte array to use as the data payload pattern. If null, a default pattern will be used.
+ * @property ttl Time To Live for the ICMP packets. A value of `-1` (default) allows the system to use its default TTL.
+ * @property timeout Timeout in milliseconds for each ping request.
+ * @property maxPingCount Maximum number of ping requests to send. Use [INFINITE] for continuous pinging.
+ * @property interval Interval in milliseconds between sending each ping request.
+ * @property probeSize The size of the ICMP packet's data payload in bytes.
+ * @property pattern An optional byte array to use as the data payload. If null, a zero-filled byte array of `probeSize` will be used.
+ * @property sourceIp The source IP address to use for sending packets. If empty, the system will choose automatically.
  */
 @Suppress("LongParameterList")
 class Pinger(
@@ -48,6 +62,7 @@ class Pinger(
     val interval: Int = DEFAULT_INTERVAL,
     val probeSize: Int = DEFAULT_PROBE_SIZE,
     val pattern: ByteArray? = null,
+    val sourceIp: String = ""
 ) {
 
     private val _isActive = AtomicBoolean(false)
@@ -74,7 +89,7 @@ class Pinger(
         try {
             withContext(Dispatchers.IO) {
                 val address = InetAddress.getByName(host)
-                ProbeManager(requireNotNull(address.hostAddress)).use { manager ->
+                ProbeManager(requireNotNull(address.hostAddress), sourceIp).use { manager ->
                     var pingCount = 0
                     while (_isActive.get() && (pingCount++ < maxPingCount || maxPingCount == INFINITE)) {
                         launch {
