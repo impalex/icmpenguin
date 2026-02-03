@@ -39,7 +39,7 @@ The library is licensed under the Apache License 2.0 and is designed for easy in
 You can add this library to your project using Gradle.
 ```groovy
 dependencies {
-  implementation("me.impa:icmpenguin:1.0.0-rc.1")
+  implementation("me.impa:icmpenguin:<latest_version>")
 }
 ```
 

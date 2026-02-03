@@ -27,7 +27,7 @@ plugins {
 }
 
 group = "me.impa"
-version = "1.0.0-rc.2"
+version = "1.0.0-rc.3"
 description = "Android ping & traceroute library with native performance"
 
 android {
