@@ -169,7 +169,7 @@ For more information, please refer to the [documentation.](https://impalex.githu
 
 **TraceMeister** is an Android application for network diagnostics (ping, traceroute, live trace) based on **icmpenguin**. It demonstrates the high performance of the library on mobile devices without root privileges.
 
-Available on [Google Play](https://play.google.com/store/apps/details?id=me.impa.tracemeister.free.orbit?utm_source=github&utm_medium=readme).
+Available on [Google Play](https://play.google.com/store/apps/details?id=me.impa.tracemeister.free.orbit&utm_source=github&utm_medium=readme).
 
 >[!TIP]
 > If you use **icmpenguin** in your project, add it here via pull request!
