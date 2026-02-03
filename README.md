@@ -19,23 +19,14 @@ The library is licensed under the Apache License 2.0 and is designed for easy in
 - **Detailed Results:** Probe results include success metrics (RTT, TTL), errors (e.g., host unreachable with offender IP), and timeouts.
 - **Thread-Safety:** Uses atomics and safe concurrency in both Kotlin and C++ layers.
 - **JNI Integration:** Native code handles socket creation, packet sending/receiving, and error processing efficiently.
-
-# Advantages
-
 - **Performance:** Native C++ core minimizes overhead for socket operations, making it faster than pure Java alternatives.
-- **Flexibility:** Extensive configuration options for probes, strategies, and sizes, suitable for advanced network diagnostics.
-- **Ease of Use:** High-level APIs (``Pinger`` and ``SimpleTracer``) abstract complexity, with suspend functions and callbacks for results.
-- **Android-Friendly:** Coroutine-based, avoids UI blocking; no external dependencies.
-- **Robust Error Handling:** Detailed error codes, offender IPs, and MTU info help in troubleshooting network issues.
-- **Open-Source:** Apache 2.0 license allows free use, modification, and distribution.
 
 # Device Compatibility
 
-### IMPORTANT!
-
 **icmpenguin** uses low-level socket APIs that require direct network stack access. While fully supported on **physical Android devices**, the **Android Emulator** has known limitations with ICMP sockets.
 
-**Always test network functionality on physical devices.** Use the emulator primarily for UI development and logic testing.
+> [!IMPORTANT]
+> **Always test network functionality on physical devices.** Use the emulator primarily for UI development and logic testing.
 
 # Requirements
 - Android API Level 24+ (Android 7.0+)
@@ -155,13 +146,25 @@ tracer.trace { hop, result ->
 
 For more information, please refer to the [documentation.](https://impalex.github.io/icmpenguin/)
 
+# Showcase
+
+### TraceMeister
+[<img height="200px" src="assets/showcase/tracemeister.png"/>](assets/showcase/tracemeister.png)
+
+**TraceMeister** is an Android application for network diagnostics (ping, traceroute, live trace) based on **icmpenguin**. It demonstrates the high performance of the library on mobile devices without root privileges.
+
+Available on [Google Play](https://play.google.com/store/apps/details?id=me.impa.tracemeister.free.orbit?utm_source=github&utm_medium=readme).
+
+>[!TIP]
+> If you use **icmpenguin** in your project, add it here via pull request!
+
 # Contributing
 
 Contributions are welcome! Please submit pull requests for bug fixes or new features.
 
 # License
 ```
- Copyright (c) 2025 Alexander Yaburov
+ Copyright (c) 2025-2026 Alexander Yaburov
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -176,5 +179,7 @@ Contributions are welcome! Please submit pull requests for bug fixes or new feat
  specific language governing permissions and limitations
  under the License.
  ```
+ 
  #
+ 
  Penguin loves packets! 🐧📦
