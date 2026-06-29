@@ -27,16 +27,16 @@ plugins {
 }
 
 group = "me.impa"
-version = "1.0.0"
+version = "1.0.0-rc.3"
 description = "Android ping & traceroute library with native performance"
 
 android {
     namespace = "${project.group}.icmpenguin"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
 
-        minSdk = 21
+        minSdk = 24
         ndkVersion = "28.1.13356709"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

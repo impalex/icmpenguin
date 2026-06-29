@@ -1,16 +1,16 @@
 [versions]
-agp = "9.2.1"
-kotlin = "2.4.0"
-coroutine = "1.11.0"
-coreKtx = "1.19.0"
-junit = "6.1.1"
-lifecycleRuntimeKtx = "2.11.0"
-activityCompose = "1.13.0"
-composeBom = "2026.06.00"
-testManifest = "1.11.3"
-annotationJvm = "1.10.0"
-dokka = "2.2.0"
-jreleaser = "1.25.0"
+agp = "9.0.0"
+kotlin = "2.3.0"
+coroutine = "1.10.2"
+coreKtx = "1.17.0"
+junit = "6.0.2"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.3"
+composeBom = "2026.01.01"
+testManifest = "1.10.2"
+annotationJvm = "1.9.1"
+dokka = "2.2.0-Beta"
+jreleaser = "1.22.0"
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
