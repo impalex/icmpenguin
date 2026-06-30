@@ -27,6 +27,7 @@ import kotlinx.coroutines.runBlocking
 import java.lang.System.loadLibrary
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class ProbeManager(host: String, sourceIp: String = "") : AutoCloseable {
 
@@ -86,7 +87,7 @@ internal class ProbeManager(host: String, sourceIp: String = "") : AutoCloseable
 
     suspend fun waitForCompletion() {
         while (getQueueSize(instance) > 0) {
-            delay(WAIT_RESOLUTION)
+            delay(WAIT_RESOLUTION.milliseconds)
         }
     }
 

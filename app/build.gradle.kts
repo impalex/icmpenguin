@@ -26,12 +26,12 @@ plugins {
 
 android {
     namespace = "me.impa.icmpenguin.demo"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "me.impa.icmpenguin.demo"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 

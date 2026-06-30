@@ -1,7 +1,7 @@
 <img width="500px" src="assets/logo_line_transparency.png"/>
 <br/>
 
-![Maven Central](https://img.shields.io/maven-central/v/me.impa/icmpenguin?color=blue) ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg) ![SDK 24+](https://img.shields.io/badge/minSdk-24+-orange.svg)
+![Maven Central](https://img.shields.io/maven-central/v/me.impa/icmpenguin?color=blue) ![License](https://img.shields.io/badge/License-Apache%202.0-green.svg) ![SDK 21+](https://img.shields.io/badge/minSdk-21+-orange.svg)
 # icmpenguin
 
 **icmpenguin** is an Android library for network diagnostics, providing tools for ping and traceroute operations. It combines Kotlin for high-level asynchronous logic using coroutines and native C++ code via JNI for low-level socket handling, supporting both IPv4 and IPv6. This allows bypassing Java/Android limitations for raw sockets like ICMP.
@@ -29,7 +29,7 @@ The library is licensed under the Apache License 2.0 and is designed for easy in
 > **Always test network functionality on physical devices.** Use the emulator primarily for UI development and logic testing.
 
 # Requirements
-- Android API Level 24+ (Android 7.0+)
+- Android API Level 21+ (Android 5.0+)
 - Internet permission in manifest:
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />

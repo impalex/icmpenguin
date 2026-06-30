@@ -27,10 +27,12 @@ import kotlinx.coroutines.withContext
 import me.impa.icmpenguin.ProbeManager
 import me.impa.icmpenguin.ProbeResult
 import me.impa.icmpenguin.ProbeType
+import me.impa.icmpenguin.getAndUpdateCompat
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.min
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Class for performing traceroute operations.
@@ -92,14 +94,14 @@ class Tracer(
                                 cutoff.set(min(hop, cutoff.get()))
                             }
                             if (probeSize is ProbeSize.MtuDiscovery) {
-                                size.getAndUpdate { old -> if (old > it.probeSize) it.probeSize else old }
+                                size.getAndUpdateCompat { old -> if (old > it.probeSize) it.probeSize else old }
                             }
                             if (hop <= cutoff.get())
                                 callback(hop, it)
                         }
                     }
                     cycle++
-                    delay(interval)
+                    delay(interval.milliseconds)
                 }
             }
         }
@@ -123,7 +125,7 @@ class Tracer(
             ProbeManager(ip, sourceIp).use { manager ->
                 while (_isActive.get()) {
                     if (manager.getQueueSize() > maxConcurrentProbes) {
-                        delay(WAIT_RESOLUTION)
+                        delay(WAIT_RESOLUTION.milliseconds)
                         continue
                     }
                     val currentProbe = probeCounter.getAndIncrement()
@@ -146,7 +148,7 @@ class Tracer(
                                 cutoff.set(min(currentHop, cutoff.get()))
                             }
                             if (probeSize is ProbeSize.MtuDiscovery) {
-                                size.getAndUpdate { old -> if (old > it.probeSize) it.probeSize else old }
+                                size.getAndUpdateCompat { old -> if (old > it.probeSize) it.probeSize else old }
                             }
                             if (currentHop <= cutoff.get())
                                 callback(currentHop, it)
