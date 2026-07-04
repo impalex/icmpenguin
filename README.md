@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> This project is no longer being maintained. Feel free to fork and use it as you wish.
+> Dev is AFK.
+
 <img width="500px" src="assets/logo_line_transparency.png"/>
 <br/>
 
